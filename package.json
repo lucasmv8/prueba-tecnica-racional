@@ -1,0 +1,46 @@
+{
+  "name": "prueba-tecnica-racional",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "pnpm run --parallel dev:api dev:app",
+    "dev:api": "pnpm --filter racional-api dev",
+    "dev:app": "pnpm --filter racional-app dev",
+    "build": "pnpm -r build",
+    "build:api": "pnpm --filter racional-api build",
+    "build:app": "pnpm --filter racional-app build",
+    "start": "pnpm --filter racional-api start & pnpm --filter racional-app preview",
+    "start:api": "pnpm --filter racional-api start",
+    "start:app": "pnpm --filter racional-app preview",
+    "lint": "pnpm -r lint",
+    "lint:fix": "pnpm -r lint:fix",
+    "format": "pnpm -r format",
+    "prisma:generate": "pnpm --filter racional-api exec prisma generate",
+    "prisma:migrate": "pnpm --filter racional-api exec prisma migrate dev",
+    "prisma:seed": "pnpm --filter racional-api exec prisma db seed",
+    "prepare": "husky"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": ["@prisma/client", "@prisma/engines", "esbuild", "prisma"]
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-import": "^2.29.0",
+    "husky": "^9.0.0",
+    "lint-staged": "^15.0.0",
+    "prettier": "^3.0.0"
+  },
+  "lint-staged": {
+    "packages/racional-api/src/**/*.ts": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "packages/racional-app/src/**/*.{ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ]
+  }
+}
