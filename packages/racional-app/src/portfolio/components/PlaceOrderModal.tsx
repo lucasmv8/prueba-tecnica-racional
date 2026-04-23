@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 
 import { apiClient } from '../../lib/api-client'
+import ErrorAlert from '../../shared/components/ErrorAlert'
 
 interface StockResult {
   ticker: string
@@ -186,7 +187,7 @@ export default function PlaceOrderModal({ portfolioId, onClose }: Props) {
                     </div>
                     {fmt(s.current_price) && (
                       <span className="text-xs text-brand-600 dark:text-brand-400 font-medium ml-2 shrink-0 tabular-nums">
-                        {fmt(s.current_price)}
+                        {fmt(s.current_price)} <span className="font-normal opacity-70">USD</span>
                       </span>
                     )}
                   </button>
@@ -213,7 +214,7 @@ export default function PlaceOrderModal({ portfolioId, onClose }: Props) {
             </div>
             <div>
               <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1.5">
-                Precio / unidad
+                Precio / unidad (USD)
               </label>
               <input
                 type="number"
@@ -245,12 +246,17 @@ export default function PlaceOrderModal({ portfolioId, onClose }: Props) {
             <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
               Total estimado
             </span>
-            <span className="font-bold text-gray-900 dark:text-white text-sm tabular-nums">
-              {totalAmount}
-            </span>
+            <div className="flex items-baseline gap-1.5">
+              <span className="font-bold text-gray-900 dark:text-white text-sm tabular-nums">
+                {totalAmount}
+              </span>
+              {totalAmount !== '-' && (
+                <span className="text-xs font-medium text-gray-400 dark:text-gray-500">USD</span>
+              )}
+            </div>
           </div>
 
-          {error && <p className="text-sm text-red-500 dark:text-red-400">{error}</p>}
+          {error && <ErrorAlert message={error} />}
 
           <div className="flex gap-2.5 pt-1">
             <button

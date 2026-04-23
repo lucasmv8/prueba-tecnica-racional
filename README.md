@@ -66,6 +66,13 @@ pnpm dev:api      # Solo la API
 pnpm dev:app      # Solo la App
 ```
 
+### 6. Levantar con build
+
+```bash
+pnpm build        # Construye la aplicación
+pnpm start        # Levanta la aplicación construida
+```
+
 ---
 
 ## API — Rutas
@@ -210,6 +217,29 @@ Caché desnormalizada de posiciones actuales. Se actualiza atómicamente con cad
 | `portfolio_id` + `stock_id` | UNIQUE | Clave compuesta |
 | `quantity` | DECIMAL(18,6) | Cantidad neta actual |
 | `average_cost` | DECIMAL(18,6) | Costo promedio ponderado |
+
+### Decisión: fuente de datos en la vista Evolución (limitación MVP)
+
+> **Nota MVP:** el gráfico de evolución mezcla dos fuentes de datos que no corresponden al mismo usuario ni al mismo momento. Esta desconexión es una limitación conocida del MVP, documentada aquí para ser resuelta en una iteración posterior.
+
+El documento de Firestore (`investmentEvolutions/user1`) expone un array de **356 entradas históricas de 2019** con datos agregados a nivel de portafolio (`portfolioValue`, `contributions`, `dailyReturn`, `portfolioIndex`). No contiene precios ni posiciones por acción, y corresponde a un portafolio demo hardcodeado (`user1`), independiente del usuario autenticado.
+
+**La inconsistencia concreta:**
+
+| Dato | Fuente | A quién pertenece |
+|------|--------|--------------------|
+| Curva del gráfico (área) | Firestore `investmentEvolutions/user1` | Usuario demo fijo, no el autenticado |
+| `dailyReturn` y `portfolioIndex` del tooltip | Firestore `investmentEvolutions/user1` | Usuario demo fijo |
+| Valor actual, P&L, retorno (cifras sobre el gráfico) | `GET /portfolios/:id/total` | Usuario autenticado real |
+
+El número grande que aparece encima de la curva (valor actual del portafolio) viene de la API del usuario real, pero la línea que traza el gráfico corresponde al historial del usuario demo. Ambos pueden diferir en varios órdenes de magnitud.
+
+**Decisión adoptada para el MVP:**
+- El **gráfico** sigue usando Firestore como fuente (cumple el requisito de visualización en tiempo real con `onSnapshot`).
+- Las **métricas actuales** (valor, P&L, retorno) se obtienen de `GET /portfolios/:id/total` para mantener consistencia con el resto de la app.
+- El **índice del portafolio** se mantiene desde Firestore porque no tiene equivalente en la API.
+
+**Lo que haría en producción:** escribir la evolución histórica real del usuario desde la API (usando sus órdenes y precios históricos de Finnhub) al documento de Firestore correspondiente a su `user_id`, y leer ese documento en el frontend en lugar del `user1` hardcodeado.
 
 ### Justificación de decisiones
 

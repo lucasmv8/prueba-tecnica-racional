@@ -10,6 +10,7 @@ import { swaggerSpec } from './shared/infrastructure/http/swagger'
 import { stocksRouter } from './stocks/infrastructure/stocks.router'
 import { transactionsRouter } from './transactions/infrastructure/transactions.router'
 import { usersRouter } from './users/infrastructure/users.router'
+import { watchlistRouter } from './watchlist/infrastructure/watchlist.router'
 
 export function createApp() {
   const app = express()
@@ -39,6 +40,7 @@ export function createApp() {
   app.use('/api/transactions', transactionsRouter)
   app.use('/api/movements', userMovementsRouter)
   app.use('/api/stocks', stocksRouter)
+  app.use('/api/watchlist', watchlistRouter)
 
   // Global error handler (must be last)
   app.use(errorHandlerMiddleware)

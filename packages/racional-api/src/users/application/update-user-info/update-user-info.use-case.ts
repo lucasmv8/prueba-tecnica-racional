@@ -8,7 +8,7 @@ export class UpdateUserInfoUseCase {
 
   async execute(userId: string, dto: UpdateUserInfoDto) {
     const user = await this.userRepository.findById(userId)
-    if (!user) throw new NotFoundError('User')
+    if (!user) throw new NotFoundError('Usuario')
 
     return this.userRepository.update(userId, dto)
   }

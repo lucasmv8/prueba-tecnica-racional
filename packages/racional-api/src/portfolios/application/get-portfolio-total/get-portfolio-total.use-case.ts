@@ -38,8 +38,8 @@ export class GetPortfolioTotalUseCase {
 
   async execute(userId: string, portfolioId: string): Promise<PortfolioTotalResult> {
     const portfolio = await this.portfolioRepository.findById(portfolioId)
-    if (!portfolio) throw new NotFoundError('Portfolio')
-    if (portfolio.user_id !== userId) throw new UnauthorizedError('Access denied')
+    if (!portfolio) throw new NotFoundError('Portafolio')
+    if (portfolio.user_id !== userId) throw new UnauthorizedError('Acceso denegado')
 
     const rawHoldings = await this.portfolioRepository.findHoldingsByPortfolioId(portfolioId)
     const activeHoldings = rawHoldings.filter((h) => new Decimal(h.quantity).greaterThan(0))

@@ -2,11 +2,10 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 
 import LoginPage from './auth/LoginPage'
 import RegisterPage from './auth/RegisterPage'
-import DashboardPage from './dashboard/DashboardPage'
-import EvolutionPage from './evolution/EvolutionPage'
 import PortfolioPage from './portfolio/PortfolioPage'
 import TransactionsPage from './transactions/TransactionsPage'
 import ProfilePage from './profile/ProfilePage'
+import WatchlistPage from './watchlist/WatchlistPage'
 import Layout from './shared/components/Layout'
 import ProtectedRoute from './shared/components/ProtectedRoute'
 
@@ -18,11 +17,12 @@ export default function App() {
 
       <Route element={<ProtectedRoute />}>
         <Route element={<Layout />}>
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
-          <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/evolution" element={<EvolutionPage />} />
+          <Route path="/" element={<Navigate to="/portfolio" replace />} />
+          <Route path="/dashboard" element={<Navigate to="/portfolio" replace />} />
+          <Route path="/evolution" element={<Navigate to="/portfolio" replace />} />
           <Route path="/portfolio" element={<PortfolioPage />} />
           <Route path="/transactions" element={<TransactionsPage />} />
+          <Route path="/watchlist" element={<WatchlistPage />} />
           <Route path="/profile" element={<ProfilePage />} />
         </Route>
       </Route>

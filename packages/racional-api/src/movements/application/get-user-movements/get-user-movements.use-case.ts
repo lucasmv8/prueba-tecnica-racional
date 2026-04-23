@@ -5,29 +5,47 @@ import type { Movement } from '../../domain/movement.entity'
 const DEFAULT_LIMIT = 20
 const MAX_LIMIT = 100
 
+type MovementKind = 'DEPOSIT' | 'WITHDRAWAL' | 'BUY' | 'SELL'
+
 export class GetUserMovementsUseCase {
   constructor(private readonly db: PrismaClient) {}
 
   async execute(
     userId: string,
-    options: { limit?: number; cursor?: string },
+    options: { limit?: number; cursor?: string; kind?: MovementKind },
   ): Promise<{ items: Movement[]; next_cursor: string | null }> {
     const limit = Math.min(options.limit ?? DEFAULT_LIMIT, MAX_LIMIT)
     const cursorDate = options.cursor ? new Date(options.cursor) : undefined
     const dateFilter = cursorDate ? { lt: cursorDate } : undefined
+    const { kind } = options
+
+    const fetchTransactions = !kind || kind === 'DEPOSIT' || kind === 'WITHDRAWAL'
+    const fetchOrders = !kind || kind === 'BUY' || kind === 'SELL'
 
     const [rawTransactions, rawOrders] = await Promise.all([
-      this.db.transaction.findMany({
-        where: { user_id: userId, date: dateFilter },
-        orderBy: { date: 'desc' },
-        take: limit,
-      }),
-      this.db.order.findMany({
-        where: { portfolio: { user_id: userId }, date: dateFilter },
-        include: { stock: { select: { ticker: true } } },
-        orderBy: { date: 'desc' },
-        take: limit,
-      }),
+      fetchTransactions
+        ? this.db.transaction.findMany({
+            where: {
+              user_id: userId,
+              date: dateFilter,
+              ...(kind ? { type: kind as 'DEPOSIT' | 'WITHDRAWAL' } : {}),
+            },
+            orderBy: { date: 'desc' },
+            take: limit,
+          })
+        : Promise.resolve([]),
+      fetchOrders
+        ? this.db.order.findMany({
+            where: {
+              portfolio: { user_id: userId },
+              date: dateFilter,
+              ...(kind ? { type: kind as 'BUY' | 'SELL' } : {}),
+            },
+            include: { stock: { select: { ticker: true } } },
+            orderBy: { date: 'desc' },
+            take: limit,
+          })
+        : Promise.resolve([]),
     ])
 
     const movements: Movement[] = [

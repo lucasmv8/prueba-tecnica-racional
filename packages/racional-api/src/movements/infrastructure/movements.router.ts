@@ -110,11 +110,18 @@ const userMovementsRouter = Router()
  *                   type: string
  *                   nullable: true
  */
+const VALID_KINDS = new Set(['DEPOSIT', 'WITHDRAWAL', 'BUY', 'SELL'])
+
 userMovementsRouter.get('/', authMiddleware, async (req, res, next) => {
   try {
     const limit = req.query.limit ? parseInt(String(req.query.limit), 10) : undefined
     const cursor = req.query.cursor ? String(req.query.cursor) : undefined
-    const result = await getUserMovements.execute(req.user.id, { limit, cursor })
+    const rawKind = req.query.kind ? String(req.query.kind).toUpperCase() : undefined
+    const kind =
+      rawKind && VALID_KINDS.has(rawKind)
+        ? (rawKind as 'DEPOSIT' | 'WITHDRAWAL' | 'BUY' | 'SELL')
+        : undefined
+    const result = await getUserMovements.execute(req.user.id, { limit, cursor, kind })
     res.json(result)
   } catch (err) {
     next(err)

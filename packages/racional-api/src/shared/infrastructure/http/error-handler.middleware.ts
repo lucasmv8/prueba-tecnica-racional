@@ -20,7 +20,7 @@ export function errorHandlerMiddleware(
     res.status(422).json({
       error: {
         code: 'VALIDATION_ERROR',
-        message: 'Invalid request data',
+        message: 'Datos de la solicitud inválidos',
         details: err.flatten().fieldErrors,
       },
     })
@@ -28,5 +28,5 @@ export function errorHandlerMiddleware(
   }
 
   console.error('[UnhandledError]', err)
-  res.status(500).json({ error: { code: 'INTERNAL_ERROR', message: 'Internal server error' } })
+  res.status(500).json({ error: { code: 'INTERNAL_ERROR', message: 'Error interno del servidor' } })
 }

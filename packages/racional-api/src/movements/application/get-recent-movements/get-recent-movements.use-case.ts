@@ -20,8 +20,8 @@ export class GetRecentMovementsUseCase {
     options: { limit?: number; cursor?: string },
   ): Promise<{ items: Movement[]; next_cursor: string | null }> {
     const portfolio = await this.portfolioRepository.findById(portfolioId)
-    if (!portfolio) throw new NotFoundError('Portfolio')
-    if (portfolio.user_id !== userId) throw new UnauthorizedError('Access denied')
+    if (!portfolio) throw new NotFoundError('Portafolio')
+    if (portfolio.user_id !== userId) throw new UnauthorizedError('Acceso denegado')
 
     const limit = Math.min(options.limit ?? DEFAULT_LIMIT, MAX_LIMIT)
     const cursorDate = options.cursor ? new Date(options.cursor) : undefined

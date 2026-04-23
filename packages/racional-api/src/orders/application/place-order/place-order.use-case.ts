@@ -18,14 +18,14 @@ export class PlaceOrderUseCase {
 
   async execute(userId: string, portfolioId: string, dto: PlaceOrderDto): Promise<Order> {
     const portfolio = await this.portfolioRepository.findById(portfolioId)
-    if (!portfolio) throw new NotFoundError('Portfolio')
-    if (portfolio.user_id !== userId) throw new UnauthorizedError('Access denied')
+    if (!portfolio) throw new NotFoundError('Portafolio')
+    if (portfolio.user_id !== userId) throw new UnauthorizedError('Acceso denegado')
 
     const qty = new Decimal(dto.quantity)
     const price = new Decimal(dto.price_per_unit)
 
-    if (qty.lessThanOrEqualTo(0)) throw new BusinessError('Quantity must be greater than zero')
-    if (price.lessThanOrEqualTo(0)) throw new BusinessError('Price must be greater than zero')
+    if (qty.lessThanOrEqualTo(0)) throw new BusinessError('La cantidad debe ser mayor a cero')
+    if (price.lessThanOrEqualTo(0)) throw new BusinessError('El precio debe ser mayor a cero')
 
     const totalAmount = qty.mul(price)
 
@@ -33,7 +33,7 @@ export class PlaceOrderUseCase {
       const balance = await calculateAvailableBalance(this.db, userId)
       if (balance.lessThan(totalAmount)) {
         throw new BusinessError(
-          `Insufficient balance: available ${balance.toFixed(2)}, required ${totalAmount.toFixed(2)}`,
+          `Saldo insuficiente: disponible $${balance.toFixed(2)}, requerido $${totalAmount.toFixed(2)}`,
         )
       }
     }
@@ -90,12 +90,12 @@ export class PlaceOrderUseCase {
         }
       } else {
         // SELL
-        if (!existing) throw new BusinessError(`No holdings for ticker ${dto.ticker}`)
+        if (!existing) throw new BusinessError(`No tienes posiciones en ${dto.ticker}`)
 
         const heldQty = new Decimal(existing.quantity.toString())
         if (qty.greaterThan(heldQty)) {
           throw new BusinessError(
-            `Insufficient holdings: trying to sell ${qty.toString()} but only ${heldQty.toString()} available`,
+            `Posición insuficiente: intentas vender ${qty.toString()} pero solo tienes ${heldQty.toString()} disponibles`,
           )
         }
 

@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 
 import { apiClient } from '../../lib/api-client'
+import ErrorAlert from '../../shared/components/ErrorAlert'
 
 interface Props {
   onClose: () => void
@@ -94,7 +95,12 @@ export default function CreatePortfolioModal({ onClose }: Props) {
           </div>
 
           {mutation.isError && (
-            <p className="text-sm text-red-500 dark:text-red-400">Error al crear portafolio</p>
+            <ErrorAlert
+              message={
+                (mutation.error as { response?: { data?: { error?: { message?: string } } } })
+                  ?.response?.data?.error?.message ?? 'Error al crear portafolio'
+              }
+            />
           )}
 
           <div className="flex gap-2.5 pt-1">

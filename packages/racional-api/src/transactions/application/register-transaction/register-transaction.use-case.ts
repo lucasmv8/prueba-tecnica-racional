@@ -16,14 +16,14 @@ export class RegisterTransactionUseCase {
   async execute(userId: string, dto: RegisterTransactionDto) {
     const amount = new Decimal(dto.amount)
     if (amount.lessThanOrEqualTo(0)) {
-      throw new BusinessError('Amount must be greater than zero')
+      throw new BusinessError('El monto debe ser mayor a cero')
     }
 
     if (dto.type === 'WITHDRAWAL') {
       const balance = await calculateAvailableBalance(this.db, userId)
       if (balance.lessThan(amount)) {
         throw new BusinessError(
-          `Insufficient balance: available ${balance.toFixed(2)}, requested ${amount.toFixed(2)}`,
+          `Saldo insuficiente: disponible $${balance.toFixed(2)}, solicitado $${amount.toFixed(2)}`,
         )
       }
     }

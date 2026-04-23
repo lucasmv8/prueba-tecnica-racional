@@ -5,10 +5,9 @@ import { useAuth } from '../../auth/AuthProvider'
 import { useTheme } from '../providers/ThemeProvider'
 
 const navItems = [
-  { to: '/dashboard', label: 'Dashboard' },
-  { to: '/evolution', label: 'Evolución' },
   { to: '/portfolio', label: 'Portafolio' },
   { to: '/transactions', label: 'Transacciones' },
+  { to: '/watchlist', label: 'Watchlist' },
 ]
 
 function SunIcon() {
@@ -105,7 +104,7 @@ export default function Layout() {
     <div className="min-h-screen bg-slate-50 dark:bg-gray-950 flex flex-col">
       <header className="sticky top-0 z-40 bg-white/90 dark:bg-gray-900/95 backdrop-blur-md border-b border-slate-200 dark:border-gray-800">
         <div className="max-w-7xl mx-auto px-5 h-16 flex items-center gap-4">
-          <Link to="/dashboard" className="shrink-0">
+          <Link to="/portfolio" className="shrink-0">
             <img src="/racional-logo.svg" alt="Racional" className="h-5 dark:invert" />
           </Link>
 

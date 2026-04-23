@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 
 import { apiClient } from '../../lib/api-client'
+import ErrorAlert from '../../shared/components/ErrorAlert'
 
 interface Props {
   onClose: () => void
@@ -129,7 +130,7 @@ export default function RegisterTransactionModal({ onClose }: Props) {
             />
           </div>
 
-          {error && <p className="text-sm text-red-500 dark:text-red-400">{error}</p>}
+          {error && <ErrorAlert message={error} />}
 
           <div className="flex gap-2.5 pt-1">
             <button

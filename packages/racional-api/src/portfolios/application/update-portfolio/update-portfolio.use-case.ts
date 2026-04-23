@@ -9,8 +9,8 @@ export class UpdatePortfolioUseCase {
 
   async execute(userId: string, portfolioId: string, dto: UpdatePortfolioDto) {
     const portfolio = await this.portfolioRepository.findById(portfolioId)
-    if (!portfolio) throw new NotFoundError('Portfolio')
-    if (portfolio.user_id !== userId) throw new UnauthorizedError('Access denied')
+    if (!portfolio) throw new NotFoundError('Portafolio')
+    if (portfolio.user_id !== userId) throw new UnauthorizedError('Acceso denegado')
 
     return this.portfolioRepository.update(portfolioId, dto)
   }
