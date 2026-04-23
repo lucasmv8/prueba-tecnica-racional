@@ -299,6 +299,8 @@ pnpm format          # Prettier en ambos packages
 pnpm prisma:generate # Regenerar Prisma Client
 pnpm prisma:migrate  # Ejecutar migraciones en Supabase
 pnpm prisma:seed     # Cargar datos de ejemplo
+pnpm test            # Ejecutar tests (si se implementan)
+pnpm test:coverage   # Ejecutar tests con reporte de cobertura
 ```
 
 ---
@@ -315,9 +317,7 @@ pnpm prisma:seed     # Cargar datos de ejemplo
 
 3. **Lógica de negocio crítica**: El `PlaceOrderUseCase` con actualización atómica de `portfolio_holdings` usando `prisma.$transaction` y `decimal.js` para el cálculo del costo promedio ponderado fue diseñado en colaboración con Claude.
 
-4. **Correcciones de TypeScript**: Claude detectó y corrigió errores de tipos en callbacks de Prisma, tipado de `$transaction`, y migración a la API de TanStack Query v5.
-
-5. **UI/UX**: El diseño del dashboard, evolution chart y sistema de colores fue definido priorizando legibilidad de datos financieros en modo oscuro.
+4. **UI/UX**: El diseño del dashboard, evolution chart y sistema de colores fue definido priorizando legibilidad de datos financieros en modo oscuro.
 
 **Decisiones donde la IA fue clave:**
 - Usar `decimal.js` + `DECIMAL(18,6)` para evitar errores de punto flotante en cálculos financieros.
